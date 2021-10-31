@@ -106,6 +106,8 @@ Figure3 shows a comparison between configurations of TFC-TDF-U-Net v1 and v2. Th
 | v1 | 9   | 5  | 16 | 2.2M | 2048, 128, 1024 |
 | v2 | 11  | 3  | 8  | 7.4M  | 2048, 256, 1024 |
 
+<center><tr>**Table 1**. A comparison of configurations</tr></center>
+
 In addition to these changes, for v2, the number of intermediate channels are increased/decreased after down/upsamples with a linear factor of 32. Also, as mentioned in Section "TFC-TDF-U-Net v2", we used different *n_fft* for each source: (6144, 4096, 16384, 8192) for (vocals, drums, bass, other).
 
 All five models (four separation models + mixer) were optimized with RMSProp with no momentum. For data augmentation, we used random chunking and mixing instruments from different songs, and also pitch shift and time stretch.
