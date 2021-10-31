@@ -64,31 +64,34 @@ This paper also summarizes experimental results on another benchmark, MusDB18.
 ## Frequency Transformation for Source Separation
 
 Some source separation methods [@phasen:2020, @choi:2020, @choi:phd] have adopted Frequency Transformation (FT) to capture frequency-to-frequency dependencies of the target source.
-Both designed their FT blocks with fully connected layers, also known as linear layers. For example, [@choi:2020] proposed Time-Distributed Fully connected layers (TDF) to capture frequency patterns observed in spectrograms of singing voice. A TDF block is a sequence of two linear layers. It is applied to a given input in the frequency domain.
+Both designed their FT blocks with fully connected layers, also known as linear layers. For example, [@choi:2020] proposed Time-Distributed Fully connected layers (TDF) to capture frequency patterns observed in spectrograms of singing voice.
+A TDF block is a sequence of two linear layers. It is applied to a given input in the frequency domain.
 The first layer downsamples the features to $\mathbb{R}^{\lceil F/bn \rceil}$, where we denote the number of frequency bins in a given spectrogram feature by $F$ and the bottleneck factor that controls the degree of downsampling by $bn$.
 
-[@choi:phd] explained how adding TDF blocks improve separation quality by visualizing trained weight matrixes of single-layered TDF blocks as follows.
+## TFC-TDF-U-Net v1
+
+[@choi:2020] proposed TFC-TDF-U-Net v1 network for singing voice separation.
+It adopted a Time-Frequency Convolutions followed by a TDF (TFC-TDF) block as a fundamental building block.
+By replacing fully connected 2-D convolutional building blocks, conventionally used in U-Net [@unet:2015] with TFC-TDF blocks, it achieved several stated-of-the-art performance on singing voice separation tasks of the MusDB18 [@musdb:2017] dataset.
+Also, injecting TDF blocks can enhance separation quality for the other tasks of MusDB18, as shown in [@choi:phd].
+
+[@choi:phd] presented how adding TDF blocks improves separation quality by visualizing trained weight matrixes of single-layered TDF blocks.
 As shown in the Figure 1, each matrix is trained to analyze timbre features uniquely observed in its instrument by capturing harmonic patterns (i.e., $y=\frac{\alpha}{\beta}x$). It is also observable that the TDF blocks still performs well in each scale.
 
 ![Weight matrixes visualization of single-layered TDF blocks](visualization.png)
 
-## TFC-TDF-U-Net v1
-
-[@choi:2020] have shown that adding TDF blocks into a conventional U-Net can improve the SDR performance, achieving 7.99dB SDR on the vocal separation task of the MusDB18 dataset.
-We call this model TFC-TDF-U-Net v1 (or TFC-TDF-U-Net in short) for the rest of this paper.
-Also, injecting TDF blocks can enhance separation quality for the other tasks of MusDB18, as shown in [@choi:phd].
-
 We summarized TFC-TDF-U-Net's performance reported in [@choi:phd] in the experiment section.
 
-
-
-# KUIELab-MDX-Net
+# Method: KUIELab-MDX-Net
 ![The Overall Architecture of KUIELab-MDX-Net](mdx_net.png)
 
-As in Figure1, KUIELab-MDX-Net consists of five networks, all trained separately. Figure1 depicts the overall flow at inference time: the four separation models (TFC-TDF-U-Net v2) first estimate each source independently, then the *Mixer* model takes these estimated sources (+ mixture) and outputs enhanced estimated sources.
+Although its performance was promising on MusDB18 benchmark, we could not submit this for MDX challenge because the original TFC-TDF-U-Net is computationally heavy to be evaluated within the time limit.
+To make an affordable model for MDX challenge, we empirically found a good balance of performance and required resources.
+
+As in Figure 2, KUIELab-MDX-Net consists of five networks, all trained separately. Figure 2 depicts the overall flow at inference time: the four separation models (TFC-TDF-U-Net v2) first estimate each source independently, then the *Mixer* model takes these estimated sources (+ mixture) and outputs enhanced estimated sources.
 
 ## TFC-TDF-U-Net v2
-![Figure 2](TFC_TDF_v2.png)
+![The architecture of TFC-TDF-U-Net v2](TFC_TDF_v2.png)
 
 The following changes were made to the original TFC-TDF-U-Net architecture:
 - For "U" connections, we used multiplication instead of concatenation.
