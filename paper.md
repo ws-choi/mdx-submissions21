@@ -33,7 +33,7 @@ arxiv-doi:
 
 # Summary
 
-Recently, many methods based on deep learning have been proposed for music source separation. Some state-of-the-art methods have shown that stacking many layers with many skip connections improve the SDR performance. Although a deep and complex architecture usually shows outstanding performance, it consumes numerous computing resources and time for training and evaluation. This paper presents a source separation model named KUIELab-MDX-Net. We empirically find a model with a good balance of performance and required resources. It took second place on leaderboard A and third place on leaderboard B in the Music Demixing Challenge at ISMIR 2021. This paper also summarizes experimental results on another benchmark, MusDB18.
+Recently, many methods based on deep learning have been proposed for music source separation. Some state-of-the-art methods have shown that stacking many layers with many skip connections improve the SDR performance. Although a deep and complex architecture usually shows outstanding performance, it consumes numerous computing resources and time for training and evaluation. This paper presents a source separation model named KUIELab-MDX-Net. We empirically find a model with a good balance of performance and required resources. KUIELab-MDX-Net took second place on leaderboard A and third place on leaderboard B in the Music Demixing Challenge at ISMIR 2021. This paper also summarizes experimental results on another benchmark, MusDB18.
 
 # Introduction
 
@@ -55,7 +55,7 @@ We observed that stacked convolutional networks without dense connections follow
 TDF, proposed in [@choi:2020], is a sequence of linear layers. It is applied to a given input in the frequency domain to capture frequency-to-frequency dependencies of the target source.
 Since a single TDF block has the whole receptive field in terms of frequency, injecting TDF blocks into a conventional U-Net [@unet:2015] improves the SDR performance on singing voice separation even with a shallower structure.
 
-With several tricks we found a computationally efficient and effective model designs architecture.
+By introducing such tricks, we found a computationally efficient and effective model designs architecture.
 KUIELab-MDX-Net took second place on leaderboard A and third place on leaderboard B in the Music Demixing Challenge at ISMIR 2021.
 This paper also summarizes experimental results on another benchmark, MusDB18.
 
@@ -63,9 +63,13 @@ This paper also summarizes experimental results on another benchmark, MusDB18.
 
 ## Frequency Transformation for Source Separation
 
+Some source separation methods [@phasen:2020, @choi:2020] have adopted Frequency Transformation (FT) to capture frequency-to-frequency dependencies of the target source.
+Both designed their FT blocks with only fully connected layers, also known as linear layers. For example, [@choi:2020] proposed Time-Distributed Fully connected layers (TDF). A TDF block is a sequence of two linear layers. It is applied to a given input in the frequency domain.
+The first layer downsamples the features to $\mathbb{R}^{\lceil F/bn \rceil}$
 
 
-## Visualizations
+[@choi:phd]
+
 
 
 # KUIELab-MDX-Net
@@ -96,6 +100,7 @@ In this section we describe the model configurations, STFT parameters, training 
 
 ## Configurations and Training
 Figure3 shows a comparison between configurations of TFC-TDF-U-Net v1 and v2. This applies to all models regardless of the target source (we did not explore different model configurations for each source). In short, v2 is a more shallow but wider model than v1.
+
 |    | # TFC-TDF blocks | # convs per block | bottleneck factor | # params | # freq bins, # STFT frames, hop size |
 |----|----|----|----|----|----|
 | v1 | 9   | 5  | 16 | 2.2M | 2048, 128, 1024 |
