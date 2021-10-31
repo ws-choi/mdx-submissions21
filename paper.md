@@ -59,20 +59,24 @@ By introducing such tricks, we found a computationally efficient and effective m
 KUIELab-MDX-Net took second place on leaderboard A and third place on leaderboard B in the Music Demixing Challenge at ISMIR 2021.
 This paper also summarizes experimental results on another benchmark, MusDB18.
 
-# Related work
+# Background
 
 ## Frequency Transformation for Source Separation
 
-Some source separation methods [@phasen:2020, @choi:2020] have adopted Frequency Transformation (FT) to capture frequency-to-frequency dependencies of the target source.
+Some source separation methods [@phasen:2020, @choi:2020, @choi:phd] have adopted Frequency Transformation (FT) to capture frequency-to-frequency dependencies of the target source.
 Both designed their FT blocks with fully connected layers, also known as linear layers. For example, [@choi:2020] proposed Time-Distributed Fully connected layers (TDF) to capture frequency patterns observed in spectrograms of singing voice. A TDF block is a sequence of two linear layers. It is applied to a given input in the frequency domain.
 The first layer downsamples the features to $\mathbb{R}^{\lceil F/bn \rceil}$, where we denote the number of frequency bins in a given spectrogram feature by $F$ and the bottleneck factor that controls the degree of downsampling by $bn$.
-[@choi:2020] have shown that adding TDF blocks into a conventional U-Net can improve the SDR performance, achieving 7.99dB SDR on the vocal separation task of the MusDB18 dataset.
-We call this model TFC-TDF-U-Net v1 (or TFC-TDF-U-Net in short) for the rest of this paper.
 
-Also, injecting TDF blocks can enhance separation quality for the other tasks of MusDB18, as shown in [@choi:phd].
-They explained how adding TDF blocks is meaningful by visualizing weight matrixes of single-layered TDF blocks as follows.
+[@choi:phd] explained how adding TDF blocks improve separation quality by visualizing trained weight matrixes of single-layered TDF blocks as follows.
+As shown in the Figure 1, each matrix is trained to analyze timbre features uniquely observed in its instrument by capturing harmonic patterns (i.e., $y=\frac{\alpha}{\beta}x$). It is also observable that the TDF blocks still performs well in each scale.
 
 ![Weight matrixes visualization of single-layered TDF blocks](visualization.png)
+
+## TFC-TDF-U-Net v1
+
+[@choi:2020] have shown that adding TDF blocks into a conventional U-Net can improve the SDR performance, achieving 7.99dB SDR on the vocal separation task of the MusDB18 dataset.
+We call this model TFC-TDF-U-Net v1 (or TFC-TDF-U-Net in short) for the rest of this paper.
+Also, injecting TDF blocks can enhance separation quality for the other tasks of MusDB18, as shown in [@choi:phd].
 
 We summarized TFC-TDF-U-Net's performance reported in [@choi:phd] in the experiment section.
 
