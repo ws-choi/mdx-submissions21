@@ -101,7 +101,7 @@ In this section we describe the model configurations, STFT parameters, training 
 ## Configurations and Training
 Figure3 shows a comparison between configurations of TFC-TDF-U-Net v1 and v2. This applies to all models regardless of the target source (we did not explore different model configurations for each source). In short, v2 is a more shallow but wider model than v1.
 
-|    | # TFC-TDF blocks | # convs per block | bottleneck factor | # params | # freq bins, # STFT frames, hop size |
+|    | # blocks | # convs per block | $bn$ | # params | # freq bins, # STFT frames, hop size |
 |----|----|----|----|----|----|
 | v1 | 9   | 5  | 16 | 2.2M | 2048, 128, 1024 |
 | v2 | 11  | 3  | 8  | 7.4M  | 2048, 256, 1024 |
@@ -128,7 +128,6 @@ Figure4 shows MUSDB benchmark performance of KUIELab-MDX-Net. We compared it to 
 | Demucs-v2       | 6.84   | 6.86  | 7.01 | 4.42  |
 | D3Net           | 7.24   | 7.01  | 5.25 | 4.53  |
 | ResUNetDecouple+| **8.98** | 6.62  | 6.04 | 5.29  |
-|-----------------|--------|-------|------|-------|
 | KUIELab-MDX-Net  | 8.88  | **7.09** | **7.38** | **6.29** |
 | KUIELab-MDX-Net w/o Mixer| 8.91   | 6.86  | 7.30 | 6.18 |   
 | KUIELab-MDX-Net + Demucs-v2 | 8.99   | 7.69  | 7.62 | 6.56 |
