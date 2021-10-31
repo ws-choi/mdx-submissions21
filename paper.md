@@ -8,21 +8,23 @@ authors:
     affiliation: 1
   - name: Woosung Choi^[co-first author]
     orcid: 0000-0003-2638-2097
-    affiliation: 1
-  - name: Jaehwa Chung
     affiliation: 2
-  - name: Daewon Lee
+  - name: Jaehwa Chung
     affiliation: 3
+  - name: Daewon Lee
+    affiliation: 4
   - name: Soonyoung Jung^[corresponding author]
     affiliation: 1
 
 affiliations:
  - name: Korea University
    index: 1
- - name: Korea National Open University
+ - name: Queen Mary University of London
    index: 2
- - name: Seokyeong university
+ - name: Korea National Open University
    index: 3
+ - name: Seokyeong university
+   index: 4
 
 date: 26 Octover 2021
 bibliography: paper.bib
