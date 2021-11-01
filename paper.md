@@ -150,6 +150,17 @@ Also, it is notable that TFC-TDF-U-Net v2 with Mixer (i.e., v2 + Mixer) outperfo
 | v2 + Demucs     | 8.80   | 7.14  | **8.11** | 5.90 |
 | KUIELab-MDX-Net | **9.00**   | **7.33**  | 7.86 | **5.95** |
 
+We also compare three winning model's performance on the MusDB18 benchmark as follows. It should be noted that we only reported SDRs evaluated on the compreesed MusDB18, not MusDB18-HQ [@MUSDB18HQ].
+
+|                 | vocals | drums | bass | other |
+|-----------------|--------|-------|------|-------|
+| Hybrid Demucs (defossez)      |8.04    |**8.58**|**8.67**|5.59 |
+| KUIELab-MDX-Net (kuielab)     |**9.00**|7.33    |7.86    |**5.95**|
+| Danna-Sep (KazaneRyonoDanna)  |7.63    |7.20    |7.05    |5.20 |
+
+Team/User nameSDRSongSDRBassSDRDrumsSDROtherSDRVocals
+
+
 # Acknowledgements
 
 # References
