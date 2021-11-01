@@ -85,10 +85,12 @@ We summarized TFC-TDF-U-Net's performance reported in [@choi:phd] in the experim
 # Method: KUIELab-MDX-Net
 ![The Overall Architecture of KUIELab-MDX-Net](mdx_net.png)
 
-Although its performance was promising on MusDB18 benchmark, we could not submit this for MDX challenge because the original TFC-TDF-U-Net is computationally heavy to be evaluated within the time limit.
-To make an affordable model for MDX challenge, we empirically found a good balance of performance and required resources.
+Since the original TFC-TDF-U-Net is computationally heavy to be evaluated within the time limit of the MDX challenge, we could not submit this, although its performance was promising on MusDB18 benchmark.
+To make an affordable model for the MDX challenge, we empirically found a good balance of performance and required resources.
 
-As in Figure 2, KUIELab-MDX-Net consists of five networks, all trained separately. Figure 2 depicts the overall flow at inference time: the four separation models (TFC-TDF-U-Net v2) first estimate each source independently, then the *Mixer* model takes these estimated sources (+ mixture) and outputs enhanced estimated sources.
+As in Figure 2, KUIELab-MDX-Net consists of six networks, all trained separately. Figure 2 depicts the overall flow at inference time: the four U-Net-based separation models (TFC-TDF-U-Net v2) first estimate each source independently, then the *Mixer* model takes these estimated sources (+ mixture) and outputs enhanced estimated sources.
+Also, we extract sources with another network based on a time domain approach, as shown in the right side of Figure 2. We used pretrained Demucs [@defossez:2021] without fine-tuning.
+Finally, it takes the weighted average for each estimated source, also known as *blending* [@Uhlich17].
 
 ## TFC-TDF-U-Net v2
 ![The architecture of TFC-TDF-U-Net v2](TFC_TDF_v2.png)
@@ -98,26 +100,28 @@ The following changes were made to the original TFC-TDF-U-Net architecture:
 - Other than U connections, all skip connections were removed.
 - In TFC-TDF-U-Net v1, the number of intermediate channels are not changed after down/upsamples. For v2, they are increased when downsampling and decreased when upsampling.
 
-On top of these architectural changes, we also use a different loss function (waveform L1 loss) as well as source-specific data preprocessing.
-As shown in Figure2, high frequencies that are above the expected frequency range of the target source were cut off from the mixture spectrogram.
+On top of these architectural changes, we also use a different loss function (time-domain $l_1$ loss) as well as source-specific data preprocessing.
+As shown in Figure 3, high frequencies that are above the expected frequency range of the target source were cut off from the mixture spectrogram.
 This way, we can increase *n_fft* while using the same input spectrogram size (which we needed to contrain for the separation time limit), and using a larger *n_fft* usually leads to better SDR. This is also our main reason we did not use a multi-target model (a single model that is trained to estimate all four sources), where we can't use source-specific frequency cutting.
 
 ## Mixer
-Although training one separation model for each source can have the benefit of source-specific preprocessing and model configurations, these models lack the knowledge that they are separating using the same mixture. We thought an additional network that *can* exploit this knowledge (which we call the Mixer) could further enhance the "independently" estimated sources.
+Although training one separation model for each source can have the benefit of source-specific preprocessing and model configurations, these models lack the knowledge that they are separating using the same mixture. We thought an additional network that *can* exploit this knowledge (which we call the Mixer) could further enhance the *independently* estimated sources.
 For example, estimated 'vocals' often have drum snare noises left. The Mixer can learn to remove sounds from 'vocals' that are also present in the estimated 'drums' or vice versa.
 
-During the MDX Challenge we only tried very shallow models (such as a single convolution layer) for the Mixer due to the time limit. We look forward to trying more complex models in the future, since even a single 1x1 convolution layer was enough to make some improvement on total SDR (Section "Performance on the MUSDB Benchmark").
+During the MDX Challenge we only tried very shallow models (such as a single convolution layer) for the Mixer due to the time limit. We look forward to trying more complex models in the future, since even a single $1 \times 1$ convolution layer was enough to make some improvement on total SDR (Section "Performance on the MUSDB Benchmark").
 
 # Experimental Results
+
 In this section we describe the model configurations, STFT parameters, training procedure, and evaluation results on the MUSDB benchmark. For training, we used the MUSDB-HQ dataset with default 86/14 train and validation splits.
 
 ## Configurations and Training
-Figure3 shows a comparison between configurations of TFC-TDF-U-Net v1 and v2. This applies to all models regardless of the target source (we did not explore different model configurations for each source). In short, v2 is a more shallow but wider model than v1.
 
-|    | # blocks | # convs per block | $bn$ | # params | # freq bins, # STFT frames, hop size |
-|----|----|----|----|----|----|
-| v1 | 9   | 5  | 16 | 2.2M | 2048, 128, 1024 |
-| v2 | 11  | 3  | 8  | 7.4M  | 2048, 256, 1024 |
+We present a comparison between configurations of TFC-TDF-U-Net v1 and v2 as follows. This applies to all models regardless of the target source (we did not explore different model configurations for each source). In short, v2 is a more shallow but wider model than v1.
+
+|    | # blocks | # convs per block | $bn$ | # freq bins | # STFT frames | hop size |
+|----|----|----|----|----|----|----|----|
+| v1 | 9   | 5  | 16 | 2048 | 128 | 1024 |
+| v2 | 11  | 3  | 8  | 2048 | 256 | 1024 |
 
 <center><tr>**Table 1**. A comparison of configurations</tr></center>
 
@@ -132,7 +136,7 @@ The overall training procedure can be summarized into two steps:
 ## Performance on the MUSDB Benchmark
 We compare our models with current state-of-the-art models on the MUSDB benchmark using the SiSEC2018 version of the SDR metric (BSS Eval v4 framewise multi-channel SDR). We report the median SDR over all 50 songs in the MUSDB test set. Only models for Leaderboard A were evaluated, since our submissions for Leaderboard B uses the MUSDB test set as part of the training set.
 
-Figure4 shows MUSDB benchmark performance of KUIELab-MDX-Net. We compared it to recent state-of-the-art models: TFC-TDF-U-Net, X-UMX, Demucs, D3Net, ResUNetDecouple. We also include our 2nd place submission for the MDX Challenge, which is a Blend of KUIELab-MDX-Net and Demucs. Even though our models were downsized for the MDX Challenge, we can see that it gives superior performance over the state-of-the-art models and achieves best SDR for every instrument except "vocals".
+Figure 5 shows MUSDB benchmark performance of KUIELab-MDX-Net. We compared it to recent state-of-the-art models: TFC-TDF-U-Net, X-UMX, Demucs, D3Net, ResUNetDecouple. We also include our 2nd place submission for the MDX Challenge, which is a Blend of KUIELab-MDX-Net and Demucs. Even though our models were downsized for the MDX Challenge, we can see that it gives superior performance over the state-of-the-art models and achieves best SDR for every instrument except "vocals".
 
 |                 | vocals | drums | bass | other |
 |-----------------|--------|-------|------|-------|
